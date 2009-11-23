@@ -6,3 +6,6 @@ Revision history for Perl module Apache2::WebApp::Plugin::Session::Memcached
 0.02 Wed Nov 18 21:40:11 2009
     - Added set cookie method to the create() method.
     - Removed $id argument from get() method.
+
+0.03 Sun Nov 22 22:09:21 2009
+    - Added new configuration option for expiring sessions.

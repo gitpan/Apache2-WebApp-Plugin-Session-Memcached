@@ -21,7 +21,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -80,7 +80,7 @@ sub create {
     $c->plugin('Cookie')->set( $c, {
         name    => $name,
         value   => $id,
-        expires => '24h',
+        expires => $c->config->{session_expires} || '24h',
       });
 
     return $id;
@@ -297,6 +297,7 @@ Unless it already exists, add the following to your projects I<webapp.conf>
 
   [session]
   storage_type = memcached
+  expires = 1h
 
 =head1 OBJECT METHODS
 
