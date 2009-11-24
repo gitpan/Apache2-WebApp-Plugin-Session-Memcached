@@ -12,7 +12,6 @@ SYNOPSIS
 DESCRIPTION
     Store persistent data using memcached (memory cache daemon).
 
-MORE INFO
     <http://www.danga.com/memcached>
 
 PREREQUISITES
@@ -60,9 +59,6 @@ CONFIGURATION
 
 OBJECT METHODS
     Please refer to Apache2::WebApp::Plugin::Session for method info.
-
-MORE INFO
-    <http://www.danga.com/memcached>
 
 SEE ALSO
     Apache2::WebApp, Apache2::WebApp::Plugin,

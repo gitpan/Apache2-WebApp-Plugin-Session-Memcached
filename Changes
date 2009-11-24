@@ -9,3 +9,6 @@ Revision history for Perl module Apache2::WebApp::Plugin::Session::Memcached
 
 0.03 Sun Nov 22 22:09:21 2009
     - Added new configuration option for expiring sessions.
+
+0.04 Mon Nov 23 23:35:49 2009
+    - Minor POD updates.

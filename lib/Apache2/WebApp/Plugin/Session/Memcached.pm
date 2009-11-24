@@ -21,7 +21,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -251,8 +251,6 @@ Apache2::WebApp::Plugin::Session::Memcached - Plugin providing session storage
 
 Store persistent data using memcached (memory cache daemon).
 
-=head1 MORE INFO
-
 L<http://www.danga.com/memcached>
 
 =head1 PREREQUISITES
@@ -302,10 +300,6 @@ Unless it already exists, add the following to your projects I<webapp.conf>
 =head1 OBJECT METHODS
 
 Please refer to L<Apache2::WebApp::Plugin::Session> for method info.
-
-=head1 MORE INFO
-
-L<http://www.danga.com/memcached>
 
 =head1 SEE ALSO
 
