@@ -1,4 +1,4 @@
-package Test;
+package Basic::Test;
 
 use strict;
 use warnings FATAL => 'all';

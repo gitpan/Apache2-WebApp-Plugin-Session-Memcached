@@ -8,7 +8,7 @@ META.yml
 lib/Apache2/WebApp/Plugin/Session/Memcached.pm
 t/001_load.t
 t/002_basic.t
-t/app/Test.pm
+t/app/Basic/Test.pm
 t/conf/extra.conf.in
 t/conf/extra.last.conf.in
 t/conf/startup.pl.in

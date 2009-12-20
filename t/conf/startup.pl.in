@@ -3,6 +3,6 @@
 #!perl
 
 use lib '@ServerRoot@/app';
-use Test;
+use Basic::Test;
 
 1;
