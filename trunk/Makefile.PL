@@ -23,9 +23,9 @@ WriteMakefile(
         'Apache::Test'                       => 0,
         'Apache::Session::Memcached'         => 0.03,
         'Apache::Session::Store::Memcached'  => 0.03,
-        'Apache2::WebApp'                    => 0.01,
-        'Apache2::WebApp::Plugin::Cookie'    => 0.01,
-        'Apache2::WebApp::Plugin::Session'   => 0.01,
+        'Apache2::WebApp'                    => 0.21,
+        'Apache2::WebApp::Plugin::Cookie'    => 0.05,
+        'Apache2::WebApp::Plugin::Session'   => 0.07,
         'Params::Validate'                   => 0,
     },
     clean => {
