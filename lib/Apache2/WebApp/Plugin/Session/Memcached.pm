@@ -21,7 +21,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
