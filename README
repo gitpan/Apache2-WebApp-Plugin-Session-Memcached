@@ -10,7 +10,8 @@ SYNOPSIS
       $c->plugin('Session')->method( ... );
 
 DESCRIPTION
-    Store persistent data using memcached (memory cache daemon).
+    Store persistent data using memcached (memory cache daemon) while
+    maintaining a stateful session using web browser cookies.
 
     <http://www.danga.com/memcached>
 
@@ -37,7 +38,7 @@ INSTALLATION
 
     Perl one liner using CPAN.pm:
 
-      perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
+      $ perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
 
     Use of CPAN.pm in interactive mode:
 

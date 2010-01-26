@@ -3,7 +3,8 @@
 #  Apache2::WebApp::Plugin::Session::Memcached - Plugin providing session storage
 #
 #  DESCRIPTION
-#  Store persistent data using memcached (memory cache daemon).
+#  Store persistent data using memcached (memory cache daemon) while
+#  maintaining a stateful session using web browser cookies.
 #
 #  AUTHOR
 #  Marc S. Brooks <mbrooks@cpan.org>
@@ -21,7 +22,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.08;
+our $VERSION = 0.09;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -219,6 +220,22 @@ sub update {
     return;
 }
 
+#----------------------------------------------------------------------------+
+# id( \%controller, $name )
+#
+# Return the unique identifier for a given session.
+
+sub id {
+    my ( $self, $c, $name )
+      = validate_pos( @_,
+          { type => OBJECT  },
+          { type => HASHREF },
+          { type => SCALAR  }
+          );
+
+    return $c->plugin('Cookie')->get($name);
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  PRIVATE METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #----------------------------------------------------------------------------+
@@ -249,7 +266,8 @@ Apache2::WebApp::Plugin::Session::Memcached - Plugin providing session storage
 
 =head1 DESCRIPTION
 
-Store persistent data using memcached (memory cache daemon).
+Store persistent data using memcached (memory cache daemon) while maintaining
+a stateful session using web browser cookies.
 
 L<http://www.danga.com/memcached>
 
@@ -278,7 +296,7 @@ From source:
 
 Perl one liner using CPAN.pm:
 
-  perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
+  $ perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
 
 Use of CPAN.pm in interactive mode:
 

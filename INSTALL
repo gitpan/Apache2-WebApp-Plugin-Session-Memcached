@@ -8,13 +8,12 @@ Install this package from source:
 
 Perl one liner using CPAN.pm:
 
-  perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
+  $ perl -MCPAN -e 'install Apache2::WebApp::Plugin::Session::Memcached'
 
 
 Use of CPAN.pm in interactive mode:
 
   $ perl -MCPAN -e shell
-
   cpan> install Apache2::WebApp::Plugin::Session::Memcached
   cpan> quit
 
@@ -34,7 +33,7 @@ A. Since you are an unpriviledged user, you aren't allowed to install modules in
 
   $ perl -MCPAN -e shell
 
-   cpan shell -- CPAN exploration and modules installation (v1.X)
-   ReadLine support enabled
+  cpan shell -- CPAN exploration and modules installation (v1.X)
+  ReadLine support enabled
 
-   cpan> o conf commit
+  cpan> o conf commit
