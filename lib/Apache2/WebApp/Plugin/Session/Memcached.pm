@@ -22,7 +22,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.10;
+our $VERSION = 0.11;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -51,7 +51,7 @@ sub create {
           );
 
     $self->error('Invalid session name')
-      unless ( $name =~ /^[\w]{20}$/ );
+      unless ( $name =~ /^[\w-]{1,20}$/ );
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -66,8 +66,8 @@ sub create {
             Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
-        };
-    };
+          };
+      };
 
     if ($@) {
         $self->error("Failed to create session: $@");
@@ -104,12 +104,12 @@ sub get {
           { type => SCALAR  }
           );
 
+    $self->error('Malformed session identifier')
+      unless ( $arg =~ /^[\w-]{1,32}$/ );
+
     my $cookie = $c->plugin('Cookie')->get($arg);
 
     my $id = ($cookie) ? $cookie : $arg;
-
-    $self->error('Malformed session identifier')
-      unless ( $id =~ /^[a-zA-Z]{32}$/ );
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -124,8 +124,8 @@ sub get {
             Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
-        };
-    };
+          };
+      };
 
     unless ($@) {
         my %values = %session;
@@ -152,14 +152,12 @@ sub delete {
           { type => SCALAR  }
           );
 
-    my $doc_root = $c->config->{apache_doc_root};
+    $self->error('Malformed session identifier')
+      unless ( $arg =~ /^[\w-]{1,32}$/ );
 
     my $cookie = $c->plugin('Cookie')->get($arg);
 
     my $id = ($cookie) ? $cookie : $arg;
-
-    $self->error('Malformed session identifier')
-      unless ( $id =~ /^[a-zA-Z]{32}$/ );
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -174,8 +172,8 @@ sub delete {
             Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
-        };
-    };
+          };
+      };
 
     unless ($@) {
         tied(%session)->delete;
@@ -201,12 +199,12 @@ sub update {
           { type => HASHREF }
           );
 
+    $self->error('Malformed session identifier')
+      unless ( $arg =~ /^[\w-]{1,32}$/ );
+
     my $cookie = $c->plugin('Cookie')->get($arg);
 
     my $id = ($cookie) ? $cookie : $arg;
-
-    $self->error('Malformed session identifier')
-      unless ( $id =~ /^[a-zA-Z]{32}$/ );
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -221,8 +219,8 @@ sub update {
             Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
-        };
-    };
+          };
+      };
 
     foreach my $key (keys %$data_ref) {
         $session{$key} = $data_ref->{$key};     # merge hash key/values
@@ -245,6 +243,9 @@ sub id {
           { type => HASHREF },
           { type => SCALAR  }
           );
+
+    $self->error('Malformed session identifier')
+      unless ( $arg =~ /^[\w-]{1,32}$/ );
 
     return $c->plugin('Cookie')->get($name);
 }
@@ -304,7 +305,7 @@ From source:
   $ tar xfz Apache2-WebApp-Plugin-Session-Memcached-0.X.X.tar.gz
   $ perl MakeFile.PL PREFIX=~/path/to/custom/dir LIB=~/path/to/custom/lib
   $ make
-  $ make test     <--- Make sure you do this before contacting me
+  $ make test
   $ make install
 
 Perl one liner using CPAN.pm:
