@@ -22,7 +22,7 @@ use Apache::Session::Memcached;
 use Apache::Session::Store::Memcached;
 use Params::Validate qw( :all );
 
-our $VERSION = 0.12;
+our $VERSION = 0.13;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~[  OBJECT METHODS  ]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -33,27 +33,27 @@ our $VERSION = 0.12;
 
 sub new {
     my $class = shift;
-    return bless( {}, $class );
+    return bless({}, $class);
 }
 
 #----------------------------------------------------------------------------+
-# create( \%controller, $name, \%data )
+# create(\%controller, $name, \%data)
 #
 # Create a new session within the database and set a web browser cookie.
 
 sub create {
-    my ( $self, $c, $name, $data_ref )
-      = validate_pos( @_,
+    my ($self, $c, $name, $data_ref)
+      = validate_pos(@_,
           { type => OBJECT  },
           { type => HASHREF },
           { type => SCALAR  },
           { type => HASHREF }
-          );
+      );
 
     $self->error('Invalid session name')
-      unless ( $name =~ /^[\w-]{1,20}$/ );
+      unless ($name =~ /^[\w-]{1,20}$/);
 
-    my @servers   = $c->config->{memcached_servers};
+    my @servers   = split(/\s*,\s*/, $c->config->{memcached_servers});
     my $threshold = $c->config->{memcached_threshold} || 10_000;
     my $debug     = $c->config->{debug}               || 0;
 
@@ -63,9 +63,8 @@ sub create {
         tie %session, 'Apache::Session::Memcached', undef, {
             Servers           => \@servers,
             NoRehash          => 1,
-            Readonly          => 0,
             Debug             => $debug,
-            CompressThreshold => $threshold,
+            CompressThreshold => int($threshold),
           };
       };
 
@@ -81,7 +80,7 @@ sub create {
 
     untie %session;
 
-    $c->plugin('Cookie')->set( $c, {
+    $c->plugin('Cookie')->set($c, {
         name    => $name,
         value   => $id,
         expires => $c->config->{session_expires} || '24h',
@@ -91,25 +90,25 @@ sub create {
 }
 
 #----------------------------------------------------------------------------+
-# get( \%controller, $arg )
+# get(\%controller, $name)
 #
 # Takes the cookie unique identifier or session id as arguments.  Returns
 # the session data as a hash reference.  
 
 sub get {
-    my ( $self, $c, $arg )
-      = validate_pos( @_,
+    my ($self, $c, $name)
+      = validate_pos(@_,
           { type => OBJECT  },
           { type => HASHREF },
           { type => SCALAR  }
-          );
+      );
 
     $self->error('Malformed session identifier')
-      unless ( $arg =~ /^[\w-]{1,32}$/ );
+      unless ($name =~ /^[\w-]{1,32}$/);
 
-    my $cookie = $c->plugin('Cookie')->get($arg);
+    my $cookie = $c->plugin('Cookie')->get($name);
 
-    my $id = ($cookie) ? $cookie : $arg;
+    my $id = $cookie ? $cookie : $name;
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -121,7 +120,6 @@ sub get {
         tie %session, 'Apache::Session::Memcached', $id, {
             Servers           => \@servers,
             NoRehash          => 1,
-            Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
           };
@@ -129,9 +127,7 @@ sub get {
 
     unless ($@) {
         my %values = %session;
-
         untie %session;
-
         return \%values;
     }
 
@@ -139,25 +135,25 @@ sub get {
 }
 
 #----------------------------------------------------------------------------+
-# delete( \%controller, $arg )
+# delete(\%controller, $name)
 #
 # Takes the cookie unique identifier or session id as arguments.  Deletes
 # an existing session.
 
 sub delete {
-    my ( $self, $c, $arg )
-      = validate_pos( @_,
+    my ($self, $c, $name)
+      = validate_pos(@_,
           { type => OBJECT  },
           { type => HASHREF },
           { type => SCALAR  }
-          );
+      );
 
     $self->error('Malformed session identifier')
-      unless ( $arg =~ /^[\w-]{1,32}$/ );
+      unless ($name =~ /^[\w-]{1,32}$/);
 
-    my $cookie = $c->plugin('Cookie')->get($arg);
+    my $cookie = $c->plugin('Cookie')->get($name);
 
-    my $id = ($cookie) ? $cookie : $arg;
+    my $id = $cookie ? $cookie : $name;
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -169,7 +165,6 @@ sub delete {
         tie %session, 'Apache::Session::Memcached', $id, {
             Servers           => \@servers,
             NoRehash          => 1,
-            Readonly          => 0,
             Debug             => $debug,
             CompressThreshold => $threshold,
           };
@@ -178,33 +173,33 @@ sub delete {
     unless ($@) {
         tied(%session)->delete;
 
-        $c->plugin('Cookie')->delete( $c, $arg );
+        $c->plugin('Cookie')->delete($c, $name);
     }
 
     return;
 }
 
 #----------------------------------------------------------------------------+
-# update( \%controller, $arg, \%data );
+# update(\%controller, $name, \%data);
 #
 # Takes the cookie unique identifier or session id as arguments.  Updates
 # existing session data.
 
 sub update {
-    my ( $self, $c, $arg, $data_ref )
-      = validate_pos( @_,
+    my ($self, $c, $name, $data_ref)
+      = validate_pos(@_,
           { type => OBJECT  },
           { type => HASHREF },
           { type => SCALAR  },
           { type => HASHREF }
-          );
+      );
 
     $self->error('Malformed session identifier')
-      unless ( $arg =~ /^[\w-]{1,32}$/ );
+      unless ($name =~ /^[\w-]{1,32}$/);
 
-    my $cookie = $c->plugin('Cookie')->get($arg);
+    my $cookie = $c->plugin('Cookie')->get($name);
 
-    my $id = ($cookie) ? $cookie : $arg;
+    my $id = $cookie ? $cookie : $name;
 
     my @servers   = $c->config->{memcached_servers};
     my $threshold = $c->config->{memcached_threshold} || 10_000;
@@ -232,20 +227,20 @@ sub update {
 }
 
 #----------------------------------------------------------------------------+
-# id( \%controller, $name )
+# id(\%controller, $name)
 #
 # Return the cookie unique identifier for a given session.
 
 sub id {
-    my ( $self, $c, $name )
-      = validate_pos( @_,
+    my ($self, $c, $name)
+      = validate_pos(@_,
           { type => OBJECT  },
           { type => HASHREF },
           { type => SCALAR  }
-          );
+      );
 
     $self->error('Malformed session identifier')
-      unless ( $arg =~ /^[\w-]{1,32}$/ );
+      unless ($name =~ /^[\w-]{1,32}$/);
 
     return $c->plugin('Cookie')->get($name);
 }
@@ -258,7 +253,7 @@ sub id {
 # Return a reference of $self to the caller.
 
 sub _init {
-    my ( $self, $params ) = @_;
+    my ($self, $params) = @_;
     return $self;
 }
 
@@ -327,7 +322,11 @@ Unless it already exists, add the following to your projects I<webapp.conf>
 
   [session]
   storage_type = memcached
-  expires = 1h
+  expires      = 1h
+
+  [memcached]
+  servers   = 127.0.0.1:11211, 10.0.0.10:11212, /var/sock/memcached
+  threshold = 10_000
 
 =head1 OBJECT METHODS
 

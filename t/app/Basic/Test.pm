@@ -4,13 +4,13 @@ use strict;
 use warnings FATAL => 'all';
 
 sub _default {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
     $self->_success($c);
 }
 
 sub _success {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
     $c->request->content_type('text/html');
 

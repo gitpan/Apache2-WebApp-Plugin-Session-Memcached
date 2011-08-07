@@ -7,3 +7,9 @@ Revision history for Perl module Apache2::WebApp::Plugin::Session::Memcached
     - Updated license field in META.yml to fix 'License Unknown' issue on CPAN
     - Updated PREREQ_PM module versions in Makefile.PL
     - Updated module versions in META.yml requires field.
+
+0.13
+    - Updated POD and README with new configuration examples.
+    - Updated package Apache2::WebApp minimum version dependencies.
+    - Fixed warning 'numeric in numeric ge (>=)' in memcached_threshold argument.
+    - Fixed runtime issue due to an orphaned variable that somehow made it into this build.
